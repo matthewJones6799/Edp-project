@@ -26,6 +26,7 @@ async function getPlanet(id) {
     let planet;
     try {
       planet = await fetchPlanet(id)
+      planet.films = await fetchFilms(planet)
     }
     catch (ex) {
       console.error(`Error reading planet ${id} data.`, ex.message);
@@ -52,7 +53,8 @@ async function getPlanet(id) {
     climateSpan.textContent = planet?.climate;
     surfaceWaterSpan.textContent = planet?.surface_water;
     // homeworldSpan.innerHTML = `<a href="/planet.html?id=${character?.homeworld.id}">${character?.homeworld.name}</a>`;
-    const filmsLis = films?.planet?.map(film => `<li><a href="/film.html?id=${film.id}">${film.title}</li>`)
+    const filmsLis = planet.films.map(film => `<li><a href="/film.html?id=${film.id}">${film.title}</li>`)
+    console.log("filmsLis", filmsLis)
     filmsUl.innerHTML = filmsLis.join("");
   }
   

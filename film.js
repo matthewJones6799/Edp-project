@@ -1,14 +1,16 @@
 let nameH1;
-let birthYearSpan;
-let heightSpan;
-let massSpan;
-let filmsDiv;
-let planetDiv;
+
+//let filmsDiv;
+//let planetDiv;
 
 let producerSpan;
-let titleSpan;
+//let titleSpan;
 let directorSpan;
 let releasedateSpan;
+let episodeidSpan
+let openingcrawlSpan
+let planetsDiv
+let characterDiv
 
 const baseUrl = `https://swapi2.azurewebsites.net/api`;
 
@@ -16,11 +18,17 @@ const baseUrl = `https://swapi2.azurewebsites.net/api`;
 addEventListener('DOMContentLoaded', () => {
   nameH1 = document.querySelector('h1#title');
   producerSpan = document.querySelector('span#producer');
-  titleSpan = document.querySelector('span#title');
+  //titleSpan = document.querySelector('span#title');
   directorSpan = document.querySelector('span#director');
+  episodeidSpan = document.querySelector('span#episode_id');
   releasedateSpan = document.querySelector('span#release_date');
+  openingcrawlSpan = document.querySelector('span#opening_crawl')
+  planetsSpan = document.querySelector('span#planets')
   //homeworldSpan = document.querySelector('span#homeworld');
   //filmsUl = document.querySelector('#films>ul');
+  //charactersUl = document.querySelector("#characters>ul")
+  charactersUl = document.querySelector('#characters>ul')
+  planetsUl = document.querySelector('#planets>ul');
   const sp = new URLSearchParams(window.location.search)
   const id = sp.get('id')
   getFilm(id)
@@ -30,8 +38,8 @@ async function getFilm(id) {
   let film;
   try {
     film = await fetchFilm(id)
-    film.homeworld = await fetchHomeworld(film) //change this to planets
-    film.films = await fetchFilms(film)  //change this to characters
+    film.planets = await fetchPlanets(film) //change this to planets
+    film.characters = await fetchCharacters(film)  //change this to characters
   }
   catch (ex) {
     console.error(`Error reading character ${id} data.`, ex.message);
@@ -45,18 +53,18 @@ async function fetchFilm(id) {
     .then(res => res.json())
 }
 
-async function fetchHomeworld(character) { //NEEDS TO BECOME FETCH PLANETS
-  const url = `${baseUrl}/planets/${character?.homeworld}`;
+async function fetchPlanets(film) { //NEEDS TO BECOME FETCH PLANETS
+  const url = `${baseUrl}/films/${film?.id}/planets`;
   const planet = await fetch(url)
     .then(res => res.json())
   return planet;
 }
 
-async function fetchFilms(character) { //NEEDS TO BECOME FETCH CHARACTERS
-  const url = `${baseUrl}/characters/${character?.id}/films`;
-  const films = await fetch(url)
+async function fetchCharacters(film) { //NEEDS TO BECOME FETCH CHARACTERS
+  const url = `${baseUrl}/films/${film?.id}/characters`;
+  const characters = await fetch(url)
     .then(res => res.json())
-  return films;
+  return characters;
 }
 
 const renderFilm = film => {
@@ -67,10 +75,16 @@ const renderFilm = film => {
   //birthYearSpan.textContent = film?.birth_year;
   //homeworldSpan.innerHTML = `<a href="/planet.html?id=${character?.homeworld.id}">${character?.homeworld.name}</a>`;
   producerSpan.textContent = film?.producer;
-  titleSpan.textContent = film?.title;
+  //titleSpan.textContent = film?.title;
   directorSpan.textContent = film?.director;
   releasedateSpan.textContent = film?.release_date;
+  episodeidSpan.textContent = film?.episode_id;
+  openingcrawlSpan.textContent = film?.opening_crawl;
 
-  const filmsLis = character?.films?.map(film => `<li><a href="/film.html?id=${film.id}">${film.title}</li>`)
-  filmsUl.innerHTML = filmsLis.join("");
+  const charactersLis = film.characters.map(characters => `<li><a href="/planet.html?id=${characters.id}">${characters.name}</li>`)
+  charactersUl.innerHTML = charactersLis.join("");
+
+  const planetsLis = film.planets.map(planets => `<li><a href="/planet.html?id=${planets.id}">${planets.name}</li>`)
+  console.log("planetslis", planetsLis)
+  planetsUl.innerHTML = planetsLis.join("");
 }

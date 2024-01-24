@@ -5,20 +5,20 @@ let massSpan;
 let filmsDiv;
 let planetDiv;
 
-let producerSpan
-let titleSpan
-let directorSpan
-let releasedateSpan
+let producerSpan;
+let titleSpan;
+let directorSpan;
+let releasedateSpan;
 
 const baseUrl = `https://swapi2.azurewebsites.net/api`;
 
 // Runs on page load
 addEventListener('DOMContentLoaded', () => {
-  nameH1 = document.querySelector('h1#name');
+  nameH1 = document.querySelector('h1#title');
   producerSpan = document.querySelector('span#producer');
   titleSpan = document.querySelector('span#title');
   directorSpan = document.querySelector('span#director');
-  releasedateSpan = document.querySelector('span#birth_year');
+  releasedateSpan = document.querySelector('span#release_date');
   //homeworldSpan = document.querySelector('span#homeworld');
   //filmsUl = document.querySelector('#films>ul');
   const sp = new URLSearchParams(window.location.search)
@@ -30,13 +30,13 @@ async function getFilm(id) {
   let film;
   try {
     film = await fetchFilm(id)
-    film.homeworld = await fetchHomeworld(film)
-    film.films = await fetchFilms(film)
+    film.homeworld = await fetchHomeworld(film) //change this to planets
+    film.films = await fetchFilms(film)  //change this to characters
   }
   catch (ex) {
     console.error(`Error reading character ${id} data.`, ex.message);
   }
-  renderCharacter(film);
+  renderFilm(film);
 
 }
 async function fetchFilm(id) {
@@ -61,7 +61,7 @@ async function fetchFilms(character) { //NEEDS TO BECOME FETCH CHARACTERS
 
 const renderFilm = film => {
   document.title = `SWAPI - ${film?.name}`;  // Just to make the browser tab say their name
-  //nameH1.textContent = film?.name;
+  nameH1.textContent = film?.title;
   //heightSpan.textContent = film?.height;
   //massSpan.textContent = film?.mass;
   //birthYearSpan.textContent = film?.birth_year;
@@ -69,7 +69,7 @@ const renderFilm = film => {
   producerSpan.textContent = film?.producer;
   titleSpan.textContent = film?.title;
   directorSpan.textContent = film?.director;
-  releasedateSpan.textContent = film?.releasedate;
+  releasedateSpan.textContent = film?.release_date;
 
   const filmsLis = character?.films?.map(film => `<li><a href="/film.html?id=${film.id}">${film.title}</li>`)
   filmsUl.innerHTML = filmsLis.join("");

@@ -81,7 +81,7 @@ const renderFilm = film => {
   episodeidSpan.textContent = film?.episode_id;
   openingcrawlSpan.textContent = film?.opening_crawl;
 
-  const charactersLis = film.characters.map(characters => `<li><a href="/planet.html?id=${characters.id}">${characters.name}</li>`)
+  const charactersLis = film.characters.map(characters => `<li><a href="/character.html?id=${characters.id}">${characters.name}</li>`)
   charactersUl.innerHTML = charactersLis.join("");
 
   const planetsLis = film.planets.map(planets => `<li><a href="/planet.html?id=${planets.id}">${planets.name}</li>`)

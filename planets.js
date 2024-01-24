@@ -9,6 +9,10 @@ let terrainSpan;
 let gravitySpan;
 let orbitalPeriodSpan;
 let populationSpan;
+let charsUl;
+let filmsUl;
+
+let planetCharacterSpan;
 
 
 // Runs on page load
@@ -23,6 +27,8 @@ addEventListener('DOMContentLoaded', () => {
   orbitalPeriodSpan = document.querySelector('span#orbital_period');
   populationSpan = document.querySelector('span#population');
   filmsUl = document.querySelector('#films>ul');
+  charsUl = document.querySelector('#chars>ul');
+  planetCharacterSpan = document.querySelector('span#homeworld')
   const sp = new URLSearchParams(window.location.search)
   const id = sp.get('id')
   getPlanet(id)
@@ -33,6 +39,7 @@ async function getPlanet(id) {
     try {
       planet = await fetchPlanet(id)
       planet.films = await fetchFilms(planet)
+      planet.characters = await fetchHomeworld(planet)
     }
     catch (ex) {
       console.error(`Error reading planet ${id} data.`, ex.message);
@@ -52,6 +59,13 @@ async function getPlanet(id) {
       .then(res => res.json())
     return films;
   }
+
+  async function fetchHomeworld(planet) {
+    const url = `${baseUrl}/${planet?.id}/characters`;
+    const characters = await fetch(url)
+      .then(res => res.json())
+    return characters;
+  }
   
   const renderPlanet = planet => {
     document.title = `SWAPI - ${planet?.name}`;  // Just to make the browser tab say their name
@@ -64,7 +78,12 @@ async function getPlanet(id) {
     gravitySpan.textContent = planet?.gravity;
     orbitalPeriodSpan.textContent = planet?.orbital_period;
     populationSpan.textContent = planet?.population;
+    // planetCharacterSpan.textContent = planet?.characters;
+    console.log(planet?.characters)
     const filmsLis = planet.films.map(film => `<li><a href="/film.html?id=${film.id}">${film.title}</li>`)
     filmsUl.innerHTML = filmsLis.join("");
+    const charsLis = planet.characters.map(character => `<li><a href="/character.html?id=${character.id}">${character.name}</li>`)
+    charsUl.innerHTML = charsLis.join("");
+    console.log(charsLis)
   }
   
